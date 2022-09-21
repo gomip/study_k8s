@@ -35,10 +35,33 @@ spec:
   - name: nginx
     image: nginx
   tolerations:
+  - key: "spray"
+    value: "mortein"
+    operator: "Equal"
+    effect: "NoSchedule"
 
+---
+k apply -f pod.yaml
 ```
-8. 
-9. 
-10. 
-11. 
-12. 
+8. check node of pod bee
+```
+k describe pods bee
+```
+9. Do you see any taints on controlplane node?
+```
+NoSchedule
+```
+10. Remove the taint on controlplane, which currently has the taint effect of NoSchedule.
+```
+k edit node controlplane
+---
+remove taint
+```
+11. What is the state of the pod mosquito now?
+```
+k get pods
+```
+12. Which node is the POD mosquito on now?
+```
+k describe pods mosquito
+```
