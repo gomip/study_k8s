@@ -18,9 +18,9 @@ k create deploy blue --image=nginx --replicas=3
 ```
 k get nodes
 ---
-k describe node node01
+k describe node node01 | grep Taints
 ---
-k describe node controlplane
+k describe node controlplane | grep Taints
 ```
 6. Set Node Affinity to the deployment to place the pods on node01 only.
 ```
