@@ -53,9 +53,11 @@ NoSchedule
 ```
 10. Remove the taint on controlplane, which currently has the taint effect of NoSchedule.
 ```
-k edit node controlplane
+k edit node controlplane node-role.kubernetes.io/master:NoSchedule
 ---
 remove taint
+---
+-> k taint node controlplane 
 ```
 11. What is the state of the pod mosquito now?
 ```
