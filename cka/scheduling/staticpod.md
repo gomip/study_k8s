@@ -1,6 +1,9 @@
 1. How many static pods exist in this cluster in all namespaces?
 ```
 k get pods --all-namespaces
+---
+static pod인걸 알고 싶으면 k get pod etcd-controlplane -n kube-system -o yaml 명령어를 실행하고 ownerReference를 확인해도 된다.
+근데 나는 귀찮아서 그냥 이름뒤에 붙은걸로 확인함
 ```
 2. Which of the below components is NOT deployed as a static pod?
 ```
@@ -17,6 +20,9 @@ k get pods --all-namespaces
 5. What is the path of the directory holding the static pod definition files?
 ```
 ...? 그냥 Manifest인가
+---
+cat /var/lib/kubeletconfig.yaml 
+staticPodPath라는 경로가 있다...
 ```
 6. How many pod definition files are present in the manifests folder?
 ```
@@ -44,7 +50,7 @@ spec:
 ---
 or
 
-k run static-busybox --image=busybox -o yaml --dry-run=client > busy.yaml
+k run static-busybox --image=busybox -o yaml --dry-run=client --command -- sleep 1000 > busy.yaml
 ---
 add command
 ```
