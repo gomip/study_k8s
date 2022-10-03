@@ -37,5 +37,8 @@ Store the backup file at location /opt/snapshot-pre-boot.db
     ETCDCTL_API=3 etcdctl snapshot restore /opt/snapshot-pre-boot.db \
       --data-dir /var/lib/etcd-backup
     ---
-    
+    vi /etc/kubernetes/manifests/etcd.yaml
+    ---
+    hostPath:
+      path: /var/lib/etcd -> etcd-backup
     ```
