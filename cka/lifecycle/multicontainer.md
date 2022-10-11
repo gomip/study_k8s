@@ -16,7 +16,7 @@ If the pod goes into the crashloopbackoff then add the command sleep 1000 in the
     ---
     command: ["sleep", "1000"]
     image: redis
-    name: gold
+    name: gold          
     --- 
     k apply -f pod.yaml 
     ```
