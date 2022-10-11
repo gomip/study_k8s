@@ -1,0 +1,5 @@
+tomcatPassword: ozKlYK79yE
+service:
+  type: NodePort
+  nodePorts:
+    http: 31111
