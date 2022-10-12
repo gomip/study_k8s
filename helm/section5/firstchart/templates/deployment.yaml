@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+{{ $flag := .Values.my.flag}}
+
+{{- if $flag }}
+{{ "this is True" | nindent 2}}
+{{- else }}
+{{ "this is False" | nindent 2 }}
+{{- end }}
+
+{{- with .Values.my.values }}
+{{- toYaml . | nindent 2}}
+{{- else }}
+{{- "this is something" | nindent 2}}
+{{- end}}
+
+{{- range .Values.my.country }}
+  - {{ . }}
+{{- end}}
+test: 
+{{- range $key,$value := .Values.image}}
+  - {{$key}}: {{$value}}
+{{- end}}
+
+myValue: {{ template "firstchart.myTemplate" .}}
+kind: Deployment
+  {{ "Helm Templating is " -}} , {{- "COOL " }}
+  {{ .Chart.Name }}
+  {{ .Release.Name }}
+  {{ .Release.Service }}
+  {{ .Release.IsInstall }}
+  {{ .Release.IsUpgrade }}
+  {{ .Template.Name }}
+  {{ .Values.my.custom.data | default "test" | upper | quote}}
+  {{ .Values.my.custom.data2 | default "test" | upper | quote}}
+metadata:
+  name: {{ include "firstchart.fullname" . }}
+  labels:
+    {{- include "firstchart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "firstchart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "firstchart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "firstchart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
